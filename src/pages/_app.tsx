@@ -17,6 +17,10 @@ function MyApp({ Component, pageProps }: AppProps) {
           href="/rounded-avatar.png"
           type="image/x-icon"
         />
+        <meta
+          property="fb:app_id"
+          content={process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}
+        />
       </Head>
       <ThemeProvider attribute="class" enableSystem defaultTheme="system">
         <Navbar />
