@@ -1,0 +1,151 @@
+---
+title: Path mapping trong React
+description: Cách setup path mapping trong react với cra, vite, nextjs, webpack. Không còn xa lạ với syntax "@/utils"
+mainImage: /assets/path-mapping-trong-react/thumbnail.png
+categories: ["React", "Javascript", "Typescript", "NextJS", "Webpack"]
+createdAt: 2022-02-26T00:09:01Z
+---
+
+Trong một dự án lớn thì việc có một folder structure phức tạp với nhiều file nested sâu không phải là chuyện lạ. Nhưng điều đó sẽ dễ dẫn tới tình trạng như
+
+![Nested import](/assets/path-mapping-trong-react/nested-import.png)
+
+Bài viết này sẽ hướng dẫn các bạn cách setup path mapping trong react để import dễ dàng hơn:
+
+![Mapped import](/assets/path-mapping-trong-react/nested-import.png)
+
+## Create React App (cra)
+
+Cra là một tool để giúp tạo dự án react with no config, nhưng chính vì thế nên ta không thể customize webpack một cách trực tiếp.  
+Ta phải sử dụng [Craco](https://github.com/gsoft-inc/craco) (Create React App Configuration Override) để giải quyết vấn đề này.
+
+Cài đặt craco
+
+```
+npm i @craco/craco craco-alias --force
+```
+
+Thay đổi scripts trong **package.json**
+
+```json mark=3:5
+{
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject"
+  }
+}
+```
+
+## File tsconfig.json hoặc jsconfig.json
+
+Thêm vào file tsconfig.json **(hoặc tạo file _jsconfig.json_ nếu dùng js)**
+
+```json mark=4:7
+{
+  "compilerOptions": {
+    // ....
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
+  // ....
+}
+```
+
+> Hai property "baseUrl" và "paths" đều rất quan trọng, thiếu 1 trong 2 thì sẽ không hoạt động
+
+Tạo file craco.config.js
+
+```javascript
+const CracoAlias = require("craco-alias");
+
+module.exports = {
+  plugins: [
+    {
+      plugin: CracoAlias,
+      options: {
+        source: "tsconfig",
+        tsConfigPath: "./tsconfig.json",
+
+        // Nếu dùng javascript
+        /*
+        source: "jsconfig",
+        baseUrl: "."
+        */
+      },
+    },
+  ],
+};
+```
+
+Giờ mọi import với path bắt đầu bằng "@/" sẽ được chuyển về src, giúp cho việc import trong nested folder dễ dàng hơn rất nhiều.
+
+## Vite
+
+Vite là build tool mới nổi và cũng có một cộng đồng rất mạnh có plugin hỗ trợ path mapping
+
+Cài đặt plugin
+
+```
+npm i vite-aliases
+```
+
+Add plugin vào trong vite.config.js
+
+```javascript mark=4,8 focus=4,8[22:34]
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+import { ViteAliases } from "vite-aliases";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react(), ViteAliases()],
+});
+```
+
+[Edit file tsconfig.json hoặc jsconfig.json](#file-tsconfig.json-hoac-jsconfig.json) giống cách dùng create-react-app
+
+Giờ thì dự án vite cũng có thể dùng alias import ngắn gọn.
+
+## Next js
+
+Nextjs đã có **native support** cho path mapping, tất cả việc cần làm là [edit file tsconfig.json hoặc jsconfig.json](#file-tsconfig.json-hoac-jsconfig.json)
+
+## Webpack
+
+Nhiều người sẽ thích tạo dự án react typescript webpack bằng tay, dù đây không phải cách tối ưu nhưng sẽ giúp customization dễ dàng hơn nhiều.  
+Bạn có thể tham khảo [template react typescript webpack](https://github.com/naptestdev/react-typescript-template.git)
+
+Cài đặt plugin
+
+```
+npm i -D tsconfig-paths-webpack-plugin
+```
+
+Thêm vào webpack.config.js
+
+```javascript mark=1,6 focus=1,6[15:39]
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+
+module.exports = {
+  // ...
+  resolve: {
+    plugins: [new TsconfigPathsPlugin()],
+    // ...
+  },
+};
+```
+
+[Edit file tsconfig.json hoặc jsconfig.json](#file-tsconfig.json-hoac-jsconfig.json) giống cách dùng create-react-app
+
+## Lưu ý
+
+Kí tự "@" trong path của bài post này là không bắt buộc, hoàn toàn có thể thay bằng các ký tự khác như "~", ... Nhưng vẫn nên sử dụng "@" vì nó tiện khi typing và có nhiều source code lớn dùng.
+
+## Kết luận
+
+Và đó là tất cả những cách để thêm path mapping vào trong một dự án react với các build tool phổ biến. Chúc bạn thành công.

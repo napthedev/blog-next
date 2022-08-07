@@ -1,0 +1,115 @@
+---
+title: Modal Box với CSS Only
+description: Tìm hiểu cách tạo model box với chỉ html và css, không dùng javascript
+mainImage: /assets/modal-box-voi-css-only/thumbnail.png
+categories: ["HTML", "CSS"]
+createdAt: 2022-02-28T11:59:25Z
+---
+
+## Giới thiệu
+
+Những element trong html như drawer, modal thông thường sẽ phải dùng javascript để có thể trigger những event để show modal, nhưng trong bài viết này mình sẽ hướng dẫn các bạn tạo một modal với css only tận dụng mẹo với checkbox
+
+<Iframe
+  src="https://codepen.io/enaypi/embed/LYOgezd?default-tab=html%2Cresult"
+  title="Codepen result"
+/>
+
+## Bắt đầu code
+
+Phần html
+
+```html
+<!-- Div quan trọng để phân biệt các modal -->
+<div>
+  <!-- Checkbox có id và name nhất định để có thể được trigger bởi các label -->
+  <input type="checkbox" class="modal-control" id="modal-1" name="modal-1" />
+
+  <!-- Button để mở modal, có thể thay bằng các phần tử khác -->
+  <label for="modal-1">Open modal</label>
+
+  <!-- Backdrop màu đen cho modal -->
+  <label for="modal-1" class="modal-background"></label>
+
+  <!-- Phần chính modal -->
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Modal Title</h3>
+      <label for="modal-1" class="cursor-pointer squishy"> Close </label>
+    </div>
+    <div class="modal-content">
+      <p>lorem...</p>
+    </div>
+  </div>
+</div>
+```
+
+Và CSS
+
+```css
+.modal {
+  position: fixed;
+  width: 90vw;
+  max-width: 450px;
+  top: 50%;
+  left: 50%;
+  background: #fff;
+  z-index: 30;
+  border-radius: 5px;
+  overflow: hidden;
+  transform: scale(0) translate(-50%, -50%);
+  transition: 0.3s;
+  transform-origin: top left;
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Hide checkbox */
+.modal-control {
+  display: none;
+}
+
+/* Chọn .modal-background ở cùng cấp độ (cùng parent) với checkbox */
+.modal-control:checked ~ .modal-background {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Chọn .modal ở cùng cấp độ (cùng parent) với checkbox */
+.modal-control:checked ~ .modal {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1) translate(-50%, -50%);
+}
+
+.modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 20;
+  background: #00000080;
+  transition: 0.3s;
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Style phần body của modal, có thể tuỳ chỉnh theo ý thích */
+.modal-header {
+  padding: 13px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.modal-content {
+  padding: 13px 20px;
+}
+```
+
+## Kết luận
+
+Và đó là cách tạo modal box với chỉ html và css, không sử dụng javascript. Chúc các bạn thành công.  
+Thành quả: [Codepen](https://codepen.io/enaypi/pen/LYOgezd)

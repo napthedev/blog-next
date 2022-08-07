@@ -1,0 +1,157 @@
+---
+title: Await một class trong javascript?
+description: Tìm hiểu về một syntax await được sử dụng rất nhiều trong những thư viện phổ biến
+mainImage: /assets/await-mot-class-trong-javascript/thumbnail.png
+categories: ["Javascript"]
+createdAt: 2022-03-08T11:15:05Z
+---
+
+## Vấn đề
+
+Khi dùng một số thư viện phổ biến như mongoose, supabase thì ta sẽ bắt gặp một số syntax như sau.  
+Await nhận về kết quả khi query tất cả field
+
+![Query all](/assets/await-mot-class-trong-javascript/query-all.png)
+
+Await sau khi đã thêm order và limit query
+
+![Query with limit](/assets/await-mot-class-trong-javascript/query-with-limit.png)
+
+Ta có thể thấy được một điều khá kì lạ rằng bình thường ta chỉ có thể dùng await với một Promise được trả về, nhưng theo ví dụ thì giá trị được trả về sau .select() không phải là một promise mà còn là một class chứa các method khác để query, nhưng ta lại vẫn có thể await class đó. Và bài post này sẽ giúp bạn tìm hiểu về await khi áp dụng với một Class trong javascript, đây gọi là class **"Thenable"**
+
+## Bắt đầu code
+
+Khởi tạo một Class có tên query và thêm vào các method đặc biệt cho việc demo giống với thư viện trong ví dụ trên.
+
+```javascript
+class Query {
+  constructor() {
+    this.steps = [];
+  }
+
+  find() {
+    this.steps.push("Find");
+    return this;
+  }
+
+  limit(num) {
+    this.steps.push(`Limit ${num}`);
+    return this;
+  }
+}
+```
+
+Giờ ta thêm một method đặc biệt vào class này
+
+```javascript mark=4:6
+class Query {
+  // ......
+
+  async then(resolve, reject) {
+    resolve(this.steps);
+  }
+}
+```
+
+Method then() trong class rất đặc biệt và nhận vào hai parameters là resolve và reject để resolve cái promise.
+
+```javascript
+const query = new Query();
+
+(async () => {
+  const data = await query.find().limit(10);
+
+  console.log(data);
+  // Log: [ 'Find', 'Limit 10' ]
+
+  const data2 = await query.find();
+  console.log(data2);
+  // Log: [ 'Find' ]
+})();
+```
+
+Ta có thể thấy rằng khi sử dụng await trong javascript nếu như đối tượng không phải một Promise, nó sẽ tự động tìm đến method .then của đối tượng đó và thực hiện rồi trả về kết quả như mong muốn
+
+## Code hoàn chỉnh
+
+<CH.Code>
+
+```javascript script.js
+class Query {
+  constructor() {
+    this.steps = [];
+  }
+
+  find() {
+    this.steps.push("Find");
+    return this;
+  }
+
+  limit(num) {
+    this.steps.push(`Limit ${num}`);
+    return this;
+  }
+
+  async then(resolve, reject) {
+    resolve(this.steps);
+  }
+}
+
+const query = new Query();
+
+(async () => {
+  const data = await query.find().limit(10);
+
+  console.log(data);
+  // Log: [ 'Find', 'Limit 10' ]
+
+  const data2 = await query.find();
+  console.log(data2);
+  // Log: [ 'Find' ]
+})();
+```
+
+```typescript script.ts
+type Steps = string[];
+
+class Query {
+  steps: Steps;
+
+  constructor() {
+    this.steps = [];
+  }
+
+  find() {
+    this.steps.push("Find");
+    return this;
+  }
+
+  limit(num) {
+    this.steps.push(`Limit ${num}`);
+    return this;
+  }
+
+  async then(resolve: (steps: Steps) => Steps, reject) {
+    resolve(this.steps);
+  }
+}
+
+const query = new Query();
+
+(async () => {
+  const data = await query.find().limit(10);
+
+  console.log(data);
+  // Log: [ 'Find', 'Limit 10' ]
+
+  const data2 = await query.find();
+  console.log(data2);
+  // Log: [ 'Find' ]
+})();
+```
+
+</CH.Code>
+
+## Kết luận
+
+Và đó là cách sử dụng await với một class để thực hiện method then(), cách viết này sẽ rất hữu dụng cho viết thư viện, v.v. Hi vọng bài viết đã giúp ích được các bạn.

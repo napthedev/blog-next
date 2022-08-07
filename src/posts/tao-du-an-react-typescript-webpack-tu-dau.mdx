@@ -1,0 +1,210 @@
+---
+title: Tạo dự án React, Typescript, Webpack từ đầu
+description: Cách tạo dự án react, typescript dùng webpack, không dùng create-react-app
+mainImage: /assets/tao-du-an-react-typescript-webpack-tu-dau/thumbnail.png
+categories: ["Webpack", "React", "Typescript"]
+createdAt: 2022-03-03T00:24:42Z
+---
+
+## Khởi tạo dự án
+
+Tạo folder mới và chạy
+
+```
+npm init -y
+```
+
+## Install Dependencies
+
+Cài đặt react
+
+```
+npm i react react-dom
+```
+
+Cài đặt devDependencies
+
+```
+npm i -D @types/react@17 @types/react-dom@17 babel-loader @babel/core @babel/preset-env @babel/preset-react @babel/preset-typescript webpack webpack-cli webpack-dev-server copy-webpack-plugin css-loader html-webpack-plugin style-loader
+```
+
+Công dụng
+
+- **react, react-dom, @types/react, @types/react-dom**: Thư viện react và type definition của nó
+- **babel-loader, @babel/core, @babel/preset-env, @babel/preset-react, @babel/preset-typescript**: compiler cho react và typescript
+- **webpack, webpack-cli**: Module bundler
+- **webpack-dev-server**: Tạo server webpack chạy trên localhost:3000
+- **copy-webpack-plugin**: Plugin webpack để đưa mọi files trong folder _public_ có thể truy cập được từ root.
+- **css-loader, style-loader**: Load và bundle css.
+- **html-webpack-plugin**: Thêm style và script vào file html sau bundle
+
+## Package.json
+
+Thay đổi nội dung script trong file package.json
+
+```json mark=4:5
+{
+  // ...
+  "scripts": {
+    "start": "webpack-dev-server --config webpack.config.js --mode development",
+    "build": "webpack --mode production"
+  }
+}
+```
+
+## Config
+
+Tạo file **.babelrc**
+
+```json
+{
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-typescript",
+    ["@babel/preset-react", { "runtime": "automatic" }]
+  ]
+}
+```
+
+File **tsconfig.json**
+
+```json
+{
+  "compilerOptions": {
+    "outDir": "./public",
+    "module": "ES6",
+    "target": "ES6",
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "jsxImportSource": "react"
+  },
+  "include": ["src/**/*"]
+}
+```
+
+File **webpack.config.js**
+
+```javascript
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+
+/** @type {import('webpack').Configuration} **/
+module.exports = {
+  // Include những file typescript, javascript trong src và node_modules
+  resolve: {
+    modules: [path.resolve(__dirname, "src"), "node_modules"],
+    extensions: [".tsx", ".ts", ".jsx", ".js"],
+  },
+  entry: ["./src/index.tsx"],
+  module: {
+    rules: [
+      // Load file typescript react bằng babel
+      {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: ["babel-loader"],
+      },
+      // Load css bằng style-loader
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
+  },
+  // Thêm [chunkhash] để thêm hash vào file tránh bị cache bởi cdn nếu trùng file name.
+  output: {
+    filename: "[name].[chunkhash].js",
+    chunkFilename: "[name].[chunkhash].js",
+    path: path.resolve(__dirname, "dist"),
+    publicPath: "/",
+  },
+  // Dev server ở port 3000
+  devServer: {
+    hot: true,
+    port: 3000,
+    historyApiFallback: true,
+    static: {
+      directory: path.resolve(__dirname, "public", "index.html"),
+      serveIndex: true,
+      watch: true,
+    },
+  },
+  plugins: [
+    // Copy mọi files trong folder public trừ file index.html
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: "public",
+          to: ".",
+          filter: (name) => {
+            return !name.endsWith("index.html");
+          },
+        },
+      ],
+    }),
+    // Plugin hỗ trợ thêm thẻ style và script vào index.html
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, "public", "index.html"),
+      filename: "index.html",
+    }),
+  ],
+};
+```
+
+Tạo folder **public** và thêm file **index.html** ở trong đó
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React App</title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+```
+
+Tạo folder **src** và thêm file **index.tsx**
+
+```typescript
+import App from "./App";
+import React from "react";
+import ReactDom from "react-dom";
+
+ReactDom.render(<App />, document.querySelector("#root"));
+```
+
+File **App.tsx** trong folder **src**
+
+```typescript
+import { FC } from "react";
+
+const App: FC = () => {
+  return <div>Hello world</div>;
+};
+
+export default App;
+```
+
+Thêm file .gitignore
+
+```
+node_modules
+dist
+```
+
+## Kết quả
+
+Giờ đây bạn có thể chạy `npm start` để chạy server trên [localhost:3000](http://localhost:3000) hoặc `npm run build` để build như một dự án react bình thường.  
+Repository: [https://github.com/naptestdev/react-typescript-template.git](https://github.com/naptestdev/react-typescript-template.git)  
+Chúc các bạn thành công.

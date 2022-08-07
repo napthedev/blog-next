@@ -1,0 +1,56 @@
+---
+title: Ép kiểu ngầm trong javascript
+description: Gần đây có một số meme về sự kì diệu của javascript khi thực hiện phép toán với các kiểu dữ liệu khác nhau. Trong bài viết này mình sẽ giải thích về việc ép kiểu ngầm trong javascript
+mainImage: /assets/ep-kieu-ngam-trong-javascript/thumbnail.png
+categories: ["Javascript"]
+createdAt: 2022-02-24T02:41:10Z
+---
+
+## Ép kiểu trong toán tử "+"
+
+Nếu một số được + với một string, số đó sẽ được ép về kiểu string
+
+```javascript
+const x = "2";
+const y = 2;
+console.log(x + y); // Return "22"
+```
+
+## Ép kiểu trong toán tử "-"
+
+Nếu hai biến được - đi nhau, chúng sẽ được ép kiểu về number
+
+```javascript
+const x = "22";
+const y = 2;
+console.log(x - y); // Return 20
+
+// Nếu có một số không thể chuyển về kiểu number, sau khi thực hiện phép tính trừ thì sẽ trả về giá trị NaN
+
+const x = "hello";
+const y = 2;
+console.log(x - y); // Return NaN
+```
+
+## Mẹo convert type
+
+Để convert nhanh một biến thành number, ta có thể viết thêm dấu "+" đằng trước biến đó
+
+```javascript
+const x = "20";
+console.log(+x); // Return 20
+```
+
+Để convert nhanh một biến thành boolean thì ta viết thêm "!!" trước biến đó
+
+```javascript
+const x = "20";
+console.log(!!x); // Return true
+
+const y = 0;
+console.log(!!y); // Return false
+```
+
+## Kết luận
+
+Đó là một số kiến thức về ép kiểu ngầm trong javascript, hi vọng bài viết này đã giúp được bạn

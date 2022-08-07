@@ -1,0 +1,139 @@
+---
+title: Typescript nâng cao
+description: Những khái niệm nâng cao của typescript mà bạn nên biết
+mainImage: /assets/typescript-nang-cao/thumbnail.png
+categories: ["Typescript"]
+createdAt: 2022-02-25T02:40:41Z
+---
+
+## 1. Generic
+
+Trong ví dụ dưới đây, ta viết một hàm có thể nhận vào array các number hoặc string và trả về biến đầu tiên, khi đó biến x trả về sẽ có type là `any` và không phải number hay string dựa theo input
+
+![generic-problem](/assets/typescript-nang-cao/generic-problem.png)
+
+Ta có thể dùng generic để giải quyết vấn đề này
+
+```typescript
+const firstItem = <T>(arr: T[]) => {
+  return arr[0];
+};
+
+const x = firstItem([1, 2, 3]);
+// type trả về của x là number
+const y = firstItem(["a", "b", "c"]);
+// type trả về của y là string
+
+// ta có thể overwrite giá trị truyền vào mặc định cho generic
+const z = firstItem<any>([true, 1, "b"]);
+```
+
+Tìm hiểu thêm về generic trong video này
+
+<Iframe
+  src="https://www.youtube.com/embed/nViEqpgwxHE"
+  title="Ben award typescript generic"
+/>
+
+## 2. Intersection type
+
+Ta có thể lấy được intersection của các property trong các type hoặc interface
+
+```typescript
+interface Client {
+  username: string;
+  photoURL: string;
+}
+
+interface Admin {
+  username: string;
+  token: string;
+}
+
+type User = Client & Admin;
+/*
+type User = {
+  username: string;
+  photoURL: string;
+  token: string;
+}
+*/
+```
+
+## 3. Return type
+
+Ta có thể lấy được cái type sẽ return của function
+
+```typescript
+type ConvertType = (str: string) => number;
+
+const convertToNumber: ConvertType = (str) => {
+  return +str;
+};
+
+type Return1 = ReturnType<typeof convertToNumber>; // type number
+type Return2 = ReturnType<ConvertType>; // type number
+```
+
+## 4. Parameters type
+
+Khi lấy parameters của một function ta sẽ nhận về type là một tuple (một array được định sẵn độ dài)
+
+```typescript
+type ConvertType = (num: number) => string;
+
+const convert: ConvertType = (num) => {
+  return `${num}`;
+};
+
+type Params1 = Parameters<typeof convert>; // type [number]
+type Params2 = Parameters<ConvertType>; // type [number]
+```
+
+## 5. Template literal type
+
+Khi truyền một union vào template literal type ta sẽ được tất cả các trường hợp mà union đó thay thế vào template
+
+```typescript
+type Gender = "male" | "female";
+
+type Message = `I'm ${Gender}`;
+// "I'm male" | "I'm female"
+```
+
+## 6. keyof
+
+Dùng keyof để lấy tất cả các key trong object / interface dưới dạng một string union
+
+```typescript
+interface User {
+  username: string;
+  password: string;
+  email: string;
+}
+
+type UserKeys = keyof User;
+// type "username" | "password" | "email"
+```
+
+## 7. Conditional type
+
+Ta có thể dùng extends để viết condition cho type
+
+```typescript
+interface User {
+  username: string;
+}
+
+interface Admin {
+  username: string;
+  role: string;
+}
+
+type MyType1 = Admin extends User ? string : null; // string
+type MyType2 = unknown extends User ? string : null; // null
+```
+
+## Kết luận
+
+Và đó là những khái niệm trong typescript nâng cao phổ biến mà mình muốn chia sẻ. Chúc bạn áp dụng thành công vào dự án của mình.

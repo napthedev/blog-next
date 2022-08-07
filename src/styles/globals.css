@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-white text-black dark:bg-[#121212] dark:text-gray-200;
+}
+
+.ch-codeblock {
+  box-shadow: none !important;
+}
+.ch-codegroup {
+  box-shadow: none !important;
+}
+
+.anchorjs-link {
+  @apply !no-underline !text-white;
+}

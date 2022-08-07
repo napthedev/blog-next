@@ -1,0 +1,81 @@
+---
+title: Tìm hiểu về call(), bind() và apply() trong Javascript
+description: Cùng tìm hiểu và phân tích sự khác nhau giữa ba phương thức gây nhầm lẫn trong javascript
+mainImage: /assets/tim-hieu-ve-call-bind-va-apply-trong-javascript/thumbnail.png
+categories: ["Javascript"]
+createdAt: 2022-02-25T00:13:13Z
+---
+
+Bài viết tham khảo ở [Full stack interviews](https://github.com/Ren0503/fullstack-interviews/tree/main/frontend/javascript#11-gi%E1%BA%A3i-th%C3%ADch-v%E1%BB%81-ph%C6%B0%C6%A1ng-th%E1%BB%A9c-call-aplly-v%C3%A0-bind)
+
+## call()
+
+Là một phương thức có sẵn trong một function trong javascript  
+Tham số đầu tiên truyền vào hàm call() sẽ chỉ định đối tượng sở hữu, có nghĩa là biến `this` trong hàm sẽ là tham số đầu tiên được truyền vào
+
+```javascript
+function greeting() {
+  console.log(`Hello ${this.name}`);
+}
+
+const person = {
+  name: "Bob",
+};
+
+greeting.call(person); // Log: "Hello Bob"
+```
+
+Hàm bind nhận vào các tham số khác sau tham số đầu tiên để truyền vào tham số của function
+
+```javascript
+function greeting(age, gender) {
+  console.log(`I'm ${this.name}. I'm ${age} years old and I'm a ${gender}`);
+}
+
+const person = {
+  name: "Bob",
+};
+
+greeting.call(person, 100, "male"); // Log: "I'm Bob. I'm 100 years old and I'm a male"
+```
+
+## apply()
+
+Gần như tương tự với phương thức call()
+Nhưng có một điểm khác biệt:
+
+- call() nhận vào parameters cho function là các parameters còn lại sau parameter đầu tiên
+
+```javascript
+function greeting(age, gender) {
+  console.log(`I'm ${this.name}. I'm ${age} years old and I'm a ${gender}`);
+}
+
+const person = {
+  name: "Bob",
+};
+
+greeting.apply(person, [100, "male"]); // Log: "I'm Bob. I'm 100 years old and I'm a male"
+```
+
+## bind()
+
+Gần giống với call() nhưng có một điểm khác là hàm bind() trả về một function khác để có thể chạy function ban đầu với các tham số đã truyền vào tương tự như hàm call()
+
+```javascript
+function greeting(age, gender) {
+  console.log(`I'm ${this.name}. I'm ${age} years old and I'm a ${gender}`);
+}
+
+const person = {
+  name: "Bob",
+};
+
+const sayGreeting = greeting.bind(person, 100, "male");
+
+sayGreeting(); // Log: "I'm Bob. I'm 100 years old and I'm a male"
+```
+
+## Kết luận
+
+Và đó là 3 phương thức dễ gây nhầm lẫn đối với function trong javascript. Hi vọng bài viết này đã giải đáp thắc mắc của bạn

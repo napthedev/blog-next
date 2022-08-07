@@ -1,0 +1,103 @@
+---
+title: Error Boundaries trong React
+description: Handle render error trong react, không lo sợ lỗi màn hình trắng bóc trong production
+mainImage: /assets/error-boundaries-trong-react/thumbnail.png
+categories: ["React", "Javascript"]
+createdAt: 2022-02-25T01:59:48Z
+---
+
+## Vấn đề
+
+Chắc hẳn ai lúc mới học code react cũng sẽ gặp những lỗi như này
+
+![error](/assets/error-boundaries-trong-react/error.png)
+
+Với một react developer đã có kinh nghiệm thì đây sẽ không phải một vấn đề to lớn để fix, nhưng khi một dự án lớn đưa vào production thì sẽ không thể handle được hết các edge cases và nếu render có thể sẽ hiển thị màn hình trắng bóc gây phiền toái cho người dùng. Vậy nên react đã có **Error Boundaries** để handle việc render error này
+
+## Bắt đầu code
+
+Tạo một file `components/ErrorBoundary.jsx`
+
+```javascript
+import { Component } from "react";
+
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+  componentDidCatch(error, errorInfo) {
+    // Gửi thông tin error lên server để dev nhận thông tin fix bug
+    console.log(error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return <h4>Something went wrong</h4>;
+    }
+    return this.props.children;
+  }
+}
+
+export default ErrorBoundary;
+```
+
+> Hiện nay error boundaries mới chỉ hỗ trợ react class component, nhưng hoàn toàn có thể viết ra một component riêng và đưa làm wrapper rồi dùng các functional component khác.
+
+Đưa component ErrorBoundary vào index.jsx để wrap mọi component làm children của component này
+
+```javascript
+import "./index.css";
+
+import App from "./App";
+import React from "react";
+import ReactDOM from "react-dom";
+
+import ErrorBoundary from "./components/ErrorBoundary";
+
+ReactDOM.render(
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>,
+  document.getElementById("root")
+);
+```
+
+Tạo một component để test và có thể tạo ra error khi render
+
+```javascript
+import { useState } from "react";
+
+export default function App() {
+  const [person, setPerson] = useState({ name: "Bob" });
+
+  return (
+    <div>
+      <p>Name: {person.name}</p>
+      <button onClick={() => setPerson(null)}>Set null</button>
+    </div>
+  );
+}
+```
+
+## Kết quả
+
+Demo việc handle error
+
+![demo.gif](/assets/error-boundaries-trong-react/demo.gif)
+
+Lỗi sẽ được in ra console
+
+![logged-error](/assets/error-boundaries-trong-react/logged-error.png)
+
+Ta có thể gửi error này lên server để dev có thể biết và fix bug trong thời gian sớm nhất.
+
+## Nguồn
+
+[Docs chính thức của react](https://reactjs.org/docs/error-boundaries.html)
+
+## Kết luận
+
+Vậy là mình đã chia sẻ về cách handle render error rất tốt cho việc xử lí lỗi trong production. Hi vọng bài viết giúp ích mọi người.
