@@ -29,7 +29,10 @@ const Home: NextPage<HomeProps> = ({ posts, categories }) => {
             }`}
           >
             <Link href={post.url}>
-              <a className="flex-shrink-0 hover:brightness-90 transition duration-300">
+              <a
+                className="flex-shrink-0 hover:brightness-90 transition duration-300"
+                title={post.title}
+              >
                 <Image
                   className="w-[100px] h-[100px] md:w-[150px] md:h-[150px] border dark:border-gray-600"
                   src={post.mainImage}
@@ -41,7 +44,10 @@ const Home: NextPage<HomeProps> = ({ posts, categories }) => {
             </Link>
             <div>
               <Link href={post.url}>
-                <a className="text-primary text-xl md:text-2xl hover:brightness-125 transition duration-300 line-clamp-1 sm:line-clamp-2">
+                <a
+                  className="text-primary text-xl md:text-2xl hover:brightness-125 transition duration-300 line-clamp-1 sm:line-clamp-2"
+                  title={post.title}
+                >
                   {post.title}
                 </a>
               </Link>

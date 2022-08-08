@@ -9,6 +9,7 @@ const Footer: FC = () => {
           href="https://napthedev.com"
           target="_blank"
           rel="noopener noreferrer"
+          title="My Portfolio"
         >
           My Portfolio
         </a>
@@ -19,6 +20,7 @@ const Footer: FC = () => {
           target="_blank"
           rel="noopener noreferrer"
           href="https://github.com/napthedev"
+          title="Github"
         >
           <svg
             className="h-6 w-6"
@@ -35,6 +37,7 @@ const Footer: FC = () => {
           target="_blank"
           rel="noopener noreferrer"
           href="https://www.facebook.com/napthedev"
+          title="Facebook"
         >
           <svg
             className="h-6 w-6"
@@ -48,6 +51,7 @@ const Footer: FC = () => {
           </svg>
         </a>
         <a
+          title="Discord"
           target="_blank"
           rel="noopener noreferrer"
           href="https://discord.com/users/877882975855992852"
@@ -64,6 +68,7 @@ const Footer: FC = () => {
           </svg>
         </a>
         <a
+          title="Codepen"
           target="_blank"
           rel="noopener noreferrer"
           href="https://codepen.io/enaypi"
