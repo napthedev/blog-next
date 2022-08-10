@@ -1,0 +1,75 @@
+---
+title: Sort Imports on save với ESLint
+description: Cách setup eslint để sort import khi lưu file giúp import gọn gàng hơn
+mainImage: /assets/sort-imports-on-save-voi-eslint/thumbnail.png
+categories: ["Javascript", "Typescript", "React", "NextJS", "ESLint"]
+createdAt: 2022-08-10T14:25:51.519Z
+---
+
+## Vấn đề
+
+Giữ source code clean luôn là một vấn đề nan giải với mọi lập trình viên. Các import statements trong javascript cũng là một trong những thành phần làm code trở nên khó đọc và mang lại một cảm giác lộn xộn, không theo một quy chuẩn nào cả
+
+[![demo.gif](/assets/sort-imports-on-save-voi-eslint/demo.gif)](https://marketplace.visualstudio.com/items?itemName=amatiasq.sort-imports)
+
+Trong bài viết này mình sẽ hướng dẫn các bạn thiết lập sort import cho một dự án nextjs với eslint
+
+## Setup
+
+Đầu tiên chúng ta phải có extension [eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) cài đặt trong vscode
+
+Sau đó ta sẽ cài đặt plugin sort import cho eslint
+
+<CH.Code>
+
+```bash npm
+npm i -D eslint-plugin-simple-import-sort
+```
+
+```bash yarn
+yarn add -D eslint-plugin-simple-import-sort
+```
+
+```bash pnpm
+pnpm i -D eslint-plugin-simple-import-sort
+```
+
+</CH.Code>
+
+Tiếp tục tạo file _eslintrc.json_ và thêm plugin vào list
+
+```json eslintrc.json mark=2,5,6
+{
+  "plugins": ["simple-import-sort"],
+  "extends": ["next/core-web-vitals"],
+  "rules": {
+    "simple-import-sort/imports": "warn",
+    "simple-import-sort/exports": "warn"
+  }
+}
+```
+
+Để có thể tự động format on save trong vscode thì chúng ta có 2 lựa chọn
+
+- Workspace Settings
+- User Settings
+
+Với workspace settings thì sẽ chỉ có tác dụng nếu ta đang mở folder đó ở root, nhưng sẽ hữu ích nếu ta làm việc theo team vì config sẽ được đưa lên cùng github repo
+
+Với user settings sẽ luôn có tác dụng kể cả khi ta mở một monorepo
+
+Để thêm workspace settings thì ta sẽ thêm folder .vscode với file settings.json với nội dung như sau
+
+```json settings.json
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}
+```
+
+Với user settings cũng sẽ tương tự, ta sẽ thêm config vào cuối file. [Tìm hiểu cách mở file settings.json](https://ourtechroom.com/tech/open-settings.json-file-vscode/)
+
+## Kết quả
+
+![result.gif](/assets/sort-imports-on-save-voi-eslint/result.gif)
