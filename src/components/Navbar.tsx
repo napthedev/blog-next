@@ -7,7 +7,7 @@ const Navbar: FC = () => {
 
   return (
     <div className="h-14 shadow dark:shadow-gray-600 flex justify-between items-center px-6">
-      <Link href="/">
+      <Link href="/" prefetch={false}>
         <a className="flex items-center gap-2">
           <img className="h-8 w-8 rounded-full" src="/avatar.jpg" alt="" />
           <h1 className="text-lg">NAPTheDev{"'"}s Blog</h1>

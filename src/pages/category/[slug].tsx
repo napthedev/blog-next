@@ -30,7 +30,7 @@ const Category: NextPage<CategoryProps> = ({ posts, categoryName }) => {
               index === 0 ? "" : "border-t dark:border-gray-600"
             }`}
           >
-            <Link href={post.url}>
+            <Link href={post.url} prefetch={false}>
               <a
                 className="flex-shrink-0 hover:brightness-90 transition duration-300"
                 title={post.title}
@@ -45,7 +45,7 @@ const Category: NextPage<CategoryProps> = ({ posts, categoryName }) => {
               </a>
             </Link>
             <div>
-              <Link href={post.url}>
+              <Link href={post.url} prefetch={false}>
                 <a
                   className="text-primary text-xl md:text-2xl hover:brightness-125 transition duration-300 line-clamp-1 sm:line-clamp-2"
                   title={post.title}

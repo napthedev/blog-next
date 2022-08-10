@@ -51,7 +51,11 @@ const PostPage: NextPage<PostProps> = ({ post, related }) => {
         </p>
         <div className="flex gap-2 flex-wrap">
           {post.categories.map((category) => (
-            <Link key={category} href={`/category/${category.toLowerCase()}`}>
+            <Link
+              key={category}
+              href={`/category/${category.toLowerCase()}`}
+              prefetch={false}
+            >
               <a className="text-primary border-primary border px-2 rounded hover:bg-primary hover:text-white transition duration-300">
                 {category}
               </a>
@@ -102,7 +106,7 @@ const PostPage: NextPage<PostProps> = ({ post, related }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {related.map((post) => (
-            <Link key={post.url} href={post.url}>
+            <Link key={post.url} href={post.url} prefetch={false}>
               <a className="flex gap-2 group" title={post.title}>
                 <Image
                   className="w-[70px] h-[70px] flex-shrink-0 group-hover:brightness-90 transition duration-300 border dark:border-gray-600"
