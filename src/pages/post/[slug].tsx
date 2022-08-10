@@ -173,6 +173,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         description: post.description,
         categories: post.categories,
         createdAt: post.createdAt,
+        mainImage: post.mainImage,
         body: {
           code: post.body.code,
         },
